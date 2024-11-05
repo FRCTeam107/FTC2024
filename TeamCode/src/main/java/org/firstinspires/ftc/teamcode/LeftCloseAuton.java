@@ -37,42 +37,59 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
-// Above this line in importing packages. Do not change anything above this line
-//
-//
-//
-//
-//
-//
-// The line below is what our auton in named.
+/*
+ * This OpMode illustrates the concept of driving a path based on encoder counts.
+ * The code is structured as a LinearOpMode
+ *
+ * The code REQUIRES that you DO have encoders on the wheels,
+ *   otherwise you would use: RobotAutoDriveByTime;
+ *
+ *  This code ALSO requires that the drive Motors have been configured such that a positive
+ *  power command moves them forward, and causes the encoders to count UP.
+ *
+ *   The desired path in this example is:
+ *   - Drive forward for 48 inches
+ *   - Spin right for 12 Inches
+ *   - Drive Backward for 24 inches
+ *   - Stop and close the claw.
+ *
+ *  The code is written using a method called: encoderDrive(speed, leftInches, rightInches, timeoutS)
+ *  that performs the actual movement.
+ *  This method assumes that each movement is relative to the last stopping place.
+ *  There are other ways to perform encoder based moves, but this method is probably the simplest.
+ *  This code uses the RUN_TO_POSITION mode to enable the Motor controllers to generate the run profile
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
+ */
 
-@Autonomous(name="autonDrivingFunctions", group="Robot")
+@Autonomous(name="LeftCloseAuton", group="Robot")
 //@Disabled
-public class AutonDrivingFunctions extends LinearOpMode {
+public class LeftCloseAuton extends LinearOpMode {
 
     IMU imu;
 
     /* Declare OpMode members. */
-    // The lines below set up the new motors that we use.
     private DcMotor leftFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     private ElapsedTime     runtime = new ElapsedTime();
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    // Below this line is where we define our variables that we use for the program
 
+    // Calculate the COUNTS_PER_INCH for your specific drive train.
+    // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
+    // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
+    // For example, use a value of 2.0 for a 12-tooth spur gear driving a 24-tooth spur gear.
+    // This is gearing DOWN for less speed and more torque.
+    // For gearing UP, use a gear ratio less than 1.0. Note this will affect the direction of wheel rotation.
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // No External Gearing.
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = 42.5;
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
     double                  CURRENT_YAW             = 0.0;
     double                  robotDesiredDirection   = 0.0;
     double                  directionError          = 0.0;
@@ -115,13 +132,11 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        //Reset the encoders
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        //Set the motors to run using encoder mode
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -135,18 +150,10 @@ public class AutonDrivingFunctions extends LinearOpMode {
                           rightBackDrive.getCurrentPosition());
         telemetry.update();
 
-        //
-        //
-        //
-        //
-        //
-        //
-        //
-        //
         // Wait for the game to start (driver presses START)
         waitForStart();
 
-        // Step through each leg of the path, this is what our robot is actually doing
+        // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
         turnLeft(0.5, 90);
@@ -154,8 +161,24 @@ public class AutonDrivingFunctions extends LinearOpMode {
         //        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
 //        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
         while (opModeIsActive()){
-            driveForward(0.5,20.0,30.0);
-            turnLeft(0.5, -90.0);
+            driveForward(0.5,25,30);
+            //sampleTower place preloaded specimen
+            sleep(3000);
+            turnLeft(0.5,90);
+            driveForward(0.5,48,30);
+            turnLeft(0.5,-90);
+            //samplePickup pick up neutral sample
+            sleep(3000);
+            turnLeft(0.5,180.0);
+            driveForward(0.5,10,30);
+            //sampleTower up, sample into high basket
+            sleep(2000);
+            turnLeft(0.5,180);
+            driveForward(0.5,12.0, 3.0);
+            turnLeft(0.5,180.0);
+
+            sleep(30000);
+
             getYaw();
             telemetry.addData("Path", "Complete");
             telemetry.update();
@@ -163,19 +186,14 @@ public class AutonDrivingFunctions extends LinearOpMode {
         sleep(100000);  // pause to display final telemetry message.
     }
 
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    // Everything below this line is functions that we use in our main program.
-
+    /*
+     *  Method to perform a relative move, based on encoder counts.
+     *  Encoders are not reset as the move is based on the current position.
+     *  Move will stop if any of three conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Move runs out of time
+     *  3) Driver stops the OpMode running.
+     */
     public void driveForward(double speed,
                              double forwardInches,
                              double timeoutS) {
@@ -184,8 +202,14 @@ public class AutonDrivingFunctions extends LinearOpMode {
         // Ensure that the OpMode is still active
         if (opModeIsActive()) {
 
-            // Determine new target position
+            // Determine new target position, and pass to motor controller
             newFrontLeftTarget = leftFrontDrive.getCurrentPosition() + (int)(forwardInches * COUNTS_PER_INCH);
+
+            // Turn On RUN_TO_POSITION
+            //leftFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //leftBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //rightFrontDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //rightBackDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -194,7 +218,12 @@ public class AutonDrivingFunctions extends LinearOpMode {
             rightFrontDrive.setPower(Math.abs(speed));
             rightBackDrive.setPower(Math.abs(speed));
 
-            //If we are running forward
+            // keep looping while we are still active, and there is time left, and both motors are running.
+            // Note: We use (isBusy() && isBusy()) in the loop test, which means that when EITHER motor hits
+            // its target position, the motion will stop.  This is "safer" in the event that the robot will
+            // always end the motion as soon as possible.
+            // However, if you require that BOTH motors have finished their moves before the robot continues
+            // onto the next step, use (isBusy() || isBusy()) in the loop test.
             if(forwardInches>0.0) {
                 while (opModeIsActive() &&
                         (runtime.seconds() < timeoutS) &&
@@ -221,6 +250,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
                     else {
                         directionError = CURRENT_YAW - robotDesiredDirection;
                     }
+                    //directionError = CURRENT_YAW - robotDesiredDirection;
 
                     directionCorrectionModifier = directionError * 0.01;
                     telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
@@ -255,17 +285,15 @@ public class AutonDrivingFunctions extends LinearOpMode {
             rightFrontDrive.setPower(0);
             rightBackDrive.setPower(0);
 
+            // Turn off RUN_TO_POSITION
+            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             sleep(250);   // optional pause after each move.
         }
     }
-
-    // Above is the DriveForward Function
-    //
-    //
-    //
-    //
-    //
-    // Below is the TurnLeft Function
 
     public void turnLeft(double turnSpeed,
                         double leftAngle){
@@ -300,7 +328,29 @@ public class AutonDrivingFunctions extends LinearOpMode {
                 };
         }
         sleep(250);
-
+//        leftFrontDrive.setPower(0.0);
+//        leftBackDrive.setPower(0.0);
+//        rightFrontDrive.setPower(0.0);
+//        rightBackDrive.setPower(0.0);
+//
+//        if(CURRENT_YAW > robotDesiredDirection){
+//            while (opModeIsActive() && CURRENT_YAW > robotDesiredDirection + 1.0){
+//                getYaw();
+//                leftFrontDrive.setPower(0.1);
+//                leftBackDrive.setPower(0.1);
+//                rightFrontDrive.setPower(-0.1);
+//                rightBackDrive.setPower(-0.1);
+//            }
+//        }
+//        else{
+//            while (opModeIsActive() && CURRENT_YAW < robotDesiredDirection - 1.0){
+//                getYaw();
+//                leftFrontDrive.setPower(-0.1);
+//                leftBackDrive.setPower(-0.1);
+//                rightFrontDrive.setPower(0.1);
+//                rightBackDrive.setPower(0.1);
+//            }
+//        }
         while(opModeIsActive() && (Math.abs(CURRENT_YAW - robotDesiredDirection) > 1.0)) {
             getYaw();
             // modify direction error if we are close to 180 or -180
@@ -338,15 +388,6 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightBackDrive.setPower(0.0);
 
     }
-
-    // Above is the TurnLeft Function
-    //
-    //
-    //
-    //
-    //
-    //
-    // Below is the getYaw Function
 
     public void getYaw(){
         YawPitchRollAngles orientation = imu.getRobotYawPitchRollAngles();
