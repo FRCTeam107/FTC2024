@@ -71,13 +71,13 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor towerMotor = null;
-    private CRServo samplePickup = null;
-    private DcMotor flipperMotor = null;
+//    private DcMotor leftFrontDrive = null;
+//    private DcMotor leftBackDrive = null;
+//    private DcMotor rightFrontDrive = null;
+//    private DcMotor rightBackDrive = null;
+//    private DcMotor towerMotor = null;
+//    private CRServo samplePickup = null;
+//    private DcMotor flipperMotor = null;
 
 
 
@@ -87,25 +87,29 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        RobotHardware robot = new RobotHardware();
+
+        robot.init(hardwareMap);
+
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
-        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
-
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        towerMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        towerMotor.setTargetPosition(0);
+//        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
+//        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
+//        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+//        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+//        towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
+//        samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
+//        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+//
+//        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+//        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+//        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+//        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+//        towerMotor.setDirection(DcMotor.Direction.REVERSE);
+//
+//        towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        towerMotor.setTargetPosition(0);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -154,53 +158,53 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             //change this to output the current value of the encoder
             if (gamepad1.a) {
-                telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+                telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
                 telemetry.update();
             }
 
             if (sample_in) {
-                samplePickup.setPower(1);
+                robot.samplePickup.setPower(1);
             } else if (sample_out) {
-                samplePickup.setPower(-1);
+                robot.samplePickup.setPower(-1);
                 sleep(10);
             } else {}
 
-            if (tower_up && towerMotor.getCurrentPosition() < 5000) {
-                towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                towerMotor.setPower(1);
+            if (tower_up && robot.towerMotor.getCurrentPosition() < 5000) {
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.towerMotor.setPower(1);
             } else if (tower_top) {
-                towerMotor.setTargetPosition(4250);
-                towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                towerMotor.setPower(.5);
+                robot.towerMotor.setTargetPosition(4250);
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.towerMotor.setPower(.5);
 
-                telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+                telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
                 telemetry.update();
             } else if (tower_low_basket) {
-                towerMotor.setTargetPosition(2500);
-                towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                towerMotor.setPower(.5);
+                robot.towerMotor.setTargetPosition(2500);
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.towerMotor.setPower(.5);
 
-                telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+                telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
                 telemetry.update();
             } else if (tower_ground) {
-                towerMotor.setTargetPosition(1700);
-                towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                towerMotor.setPower(.5);
+                robot.towerMotor.setTargetPosition(1700);
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.towerMotor.setPower(.5);
 
-                telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+                telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
                 telemetry.update();
             //set tower to pickup position
             } else if (tower_bottom) {
-                towerMotor.setTargetPosition(800);
-                towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                towerMotor.setPower(.5);
+                robot.towerMotor.setTargetPosition(800);
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.towerMotor.setPower(.5);
 
-                telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+                telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
                 telemetry.update();
             //move tower down until encoder at zero
-            }else if(tower_down && towerMotor.getCurrentPosition() < 0) {
-                towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                towerMotor.setPower(-.75);
+            }else if(tower_down && robot.towerMotor.getCurrentPosition() < 0) {
+                robot.towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                robot.towerMotor.setPower(-.75);
 
 
             }
@@ -208,39 +212,39 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             //set flipper motor position
             if (gamepad1.right_bumper) {
-                flipperMotor.setTargetPosition(50);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+                robot.flipperMotor.setTargetPosition(50);
+                robot.flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.flipperMotor.setPower(1);
 
-                telemetry.addData("current spot:", "%7d", flipperMotor.getCurrentPosition());
+                telemetry.addData("current spot:", "%7d", robot.flipperMotor.getCurrentPosition());
                 telemetry.update();
 
             } else if (gamepad1.left_bumper) {
-                flipperMotor.setTargetPosition(2);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(.5);
+                robot.flipperMotor.setTargetPosition(2);
+                robot.flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                robot.flipperMotor.setPower(.5);
 
-                telemetry.addData("current Waffle:", "%7d", flipperMotor.getCurrentPosition());
+                telemetry.addData("current Waffle:", "%7d", robot.flipperMotor.getCurrentPosition());
                 telemetry.update();
 
 
             } else {
-                if (!flipperMotor.isBusy()) {
-                    flipperMotor.setPower(0.0);
+                if (!robot.flipperMotor.isBusy()) {
+                    robot.flipperMotor.setPower(0.0);
                 } else { }
             }
 
             // Send calculated power to wheels
-            leftFrontDrive.setPower(leftFrontPower);
-            rightFrontDrive.setPower(rightFrontPower);
-            leftBackDrive.setPower(leftBackPower);
-            rightBackDrive.setPower(rightBackPower);
+            robot.leftFrontDrive.setPower(leftFrontPower);
+            robot.rightFrontDrive.setPower(rightFrontPower);
+            robot.leftBackDrive.setPower(leftBackPower);
+            robot.rightBackDrive.setPower(rightBackPower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
+            telemetry.addData("current:", "%7d", robot.towerMotor.getCurrentPosition());
             telemetry.update();
             telemetry.update();
         }
