@@ -29,12 +29,10 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -77,7 +75,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor towerMotor = null;
     private CRServo samplePickup = null;
-    private DcMotor flipperMotor = null;
+    private DcMotor armMotor = null;
+    private DcMotor climberMotor = null;
 
 
 
@@ -95,7 +94,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
-        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+        climberMotor = hardwareMap.get(DcMotor.class, "climber_motor");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -104,8 +104,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         towerMotor.setDirection(DcMotor.Direction.REVERSE);
 
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setTargetPosition(0);
+        armMotor.setTargetPosition(0);
+        climberMotor.setTargetPosition(0);
 
         // Wait for the game to start (driver presses START)
         telemetry.addData("Status", "Initialized");
@@ -131,6 +133,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             boolean tower_low_basket = gamepad2.x;
             boolean tower_bottom = gamepad2.b;
             boolean tower_ground = gamepad2.a;
+            boolean flipper_up = gamepad2.right_bumper;
+            boolean flipper_down = gamepad2.left_bumper;
+            boolean climber_up = gamepad2.right_stick_button;
+            boolean climber_down = gamepad2.left_stick_button;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -162,7 +168,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 samplePickup.setPower(1);
             } else if (sample_out) {
                 samplePickup.setPower(-1);
-                sleep(10);
             } else {}
 
             if (tower_up && towerMotor.getCurrentPosition() < 5000) {
@@ -202,33 +207,44 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 towerMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 towerMotor.setPower(-.75);
 
-
             }
             else { }
 
             //set flipper motor position
-            if (gamepad1.right_bumper) {
-                flipperMotor.setTargetPosition(50);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+            if (flipper_up) {
+                armMotor.setTargetPosition(50);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(1);
 
-                telemetry.addData("current spot:", "%7d", flipperMotor.getCurrentPosition());
+                telemetry.addData("current spot:", "%7d", armMotor.getCurrentPosition());
                 telemetry.update();
 
-            } else if (gamepad1.left_bumper) {
-                flipperMotor.setTargetPosition(2);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(.5);
+            } else if (flipper_down) {
+                armMotor.setTargetPosition(2);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(.5);
 
-                telemetry.addData("current Waffle:", "%7d", flipperMotor.getCurrentPosition());
+                telemetry.addData("current Waffle:", "%7d", armMotor.getCurrentPosition());
                 telemetry.update();
 
 
             } else {
-                if (!flipperMotor.isBusy()) {
-                    flipperMotor.setPower(0.0);
-                } else { }
+                if (!armMotor.isBusy()) {
+                    armMotor.setPower(0.0);
+                }
             }
+
+            //set climber motor position
+            if (climber_up) {
+                climberMotor.setPower(-1);
+
+            } else if (climber_down) {
+                climberMotor.setPower(1);
+            } else {
+                    climberMotor.setPower(0.0);
+            }
+
+
 
             // Send calculated power to wheels
             leftFrontDrive.setPower(leftFrontPower);
@@ -242,6 +258,6 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             telemetry.addData("Back left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("current:", "%7d", towerMotor.getCurrentPosition());
             telemetry.update();
-            telemetry.update();
+
         }
     }}
