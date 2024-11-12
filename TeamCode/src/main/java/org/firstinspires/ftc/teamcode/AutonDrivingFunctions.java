@@ -166,11 +166,25 @@ public class AutonDrivingFunctions extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
 //        turnLeft(0.5, 90);
-        intake(-1);
-        sleep(2500);
-        intake(0);
-        lift(200,.5);
-        arm(-500,0.5);
+        lift(1500,1);
+        driveForward(.5,7,10);
+        turnLeft(.5,90);
+        driveForward(.5,12,10);
+        turnLeft(.5,45);
+        driveForward(.5,4,10);
+        intake(1);
+        sleep(30000);
+//        turnLeft(.5,-155);
+//        driveForward(.5,13,10);
+//        turnLeft(.5,20);
+//        turnLeft(.5,-20);
+//        driveForward(.5,-13,10);
+//        turnLeft(.5,155);
+//        intake(-1);
+//        sleep(2500);
+//        intake(0);
+//        lift(200,.5);
+//        arm(-500,0.5);
 
 
 //
