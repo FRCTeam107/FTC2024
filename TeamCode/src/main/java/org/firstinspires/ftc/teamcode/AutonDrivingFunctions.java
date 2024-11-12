@@ -32,12 +32,12 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 // Above this line in importing packages. Do not change anything above this line
@@ -62,6 +62,9 @@ public class AutonDrivingFunctions extends LinearOpMode {
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
     private ElapsedTime     runtime = new ElapsedTime();
+    private CRServo samplePickup = null;
+    private DcMotor towerMotor = null;
+    private DcMotor armMotor = null;
     //
     //
     //
@@ -87,6 +90,11 @@ public class AutonDrivingFunctions extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
+        towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+
+
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -108,31 +116,39 @@ public class AutonDrivingFunctions extends LinearOpMode {
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        towerMotor.setDirection(DcMotor.Direction.REVERSE);
 
         //Set the motors to brake when there is no power
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Reset the encoders
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         //Set the motors to run using encoder mode
         leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        towerMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        towerMotor.setTargetPosition(0);
+
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d : %7d : %7d : %7d" ,
-                          leftFrontDrive.getCurrentPosition(),
-                          leftBackDrive.getCurrentPosition(),
-                          rightFrontDrive.getCurrentPosition(),
-                          rightBackDrive.getCurrentPosition());
+                leftFrontDrive.getCurrentPosition(),
+                leftBackDrive.getCurrentPosition(),
+                rightFrontDrive.getCurrentPosition(),
+                rightBackDrive.getCurrentPosition());
         telemetry.update();
 
         //
@@ -149,17 +165,31 @@ public class AutonDrivingFunctions extends LinearOpMode {
         // Step through each leg of the path, this is what our robot is actually doing
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-        turnLeft(0.5, 90);
+//        turnLeft(0.5, 90);
+        intake(-1);
+        sleep(2500);
+        intake(0);
+        lift(200,.5);
+        arm(-500,0.5);
+
+
+//
+//        samplePickup.setPower(1);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds()< 0.5){}
+//        samplePickup.setPower(0);
+
+
 
         //        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
 //        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-        while (opModeIsActive()){
-            driveForward(0.5,20.0,30.0);
-            turnLeft(0.5, -90.0);
-            getYaw();
-            telemetry.addData("Path", "Complete");
-            telemetry.update();
-        }
+//        while (opModeIsActive()){
+//            driveForward(0.5,20.0,30.0);
+//            turnLeft(0.5, -90.0);
+//            getYaw();
+//            telemetry.addData("Path", "Complete");
+//            telemetry.update();
+//        }
         sleep(100000);  // pause to display final telemetry message.
     }
 
@@ -268,7 +298,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
     // Below is the TurnLeft Function
 
     public void turnLeft(double turnSpeed,
-                        double leftAngle){
+                         double leftAngle){
         if(robotDesiredDirection + leftAngle > 180){
             robotDesiredDirection = robotDesiredDirection + leftAngle - 360;
         }
@@ -279,7 +309,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
             robotDesiredDirection = robotDesiredDirection + leftAngle;
         }
 
-        double              turnTargetPosition      = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
+        double turnTargetPosition = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
 
 
         if (leftAngle > 0.0) {
@@ -292,12 +322,12 @@ public class AutonDrivingFunctions extends LinearOpMode {
 
         }
         else {
-                leftFrontDrive.setPower(turnSpeed);
-                leftBackDrive.setPower(turnSpeed);
-                rightFrontDrive.setPower(-turnSpeed);
-                rightBackDrive.setPower(-turnSpeed);
-                while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
-                };
+            leftFrontDrive.setPower(turnSpeed);
+            leftBackDrive.setPower(turnSpeed);
+            rightFrontDrive.setPower(-turnSpeed);
+            rightBackDrive.setPower(-turnSpeed);
+            while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
+            };
         }
         sleep(250);
 
@@ -353,5 +383,30 @@ public class AutonDrivingFunctions extends LinearOpMode {
         CURRENT_YAW = orientation.getYaw(AngleUnit.DEGREES);
         telemetry.addData("Yaw (Z)", "%.2f Deg. (Heading)", CURRENT_YAW);
         telemetry.update();
+    }
+
+
+
+    //intake mechanism function
+    public void intake(int intakePower){
+        samplePickup.setPower(intakePower);
+    }
+
+
+
+    //lift Function
+    public void lift(int liftHeight, double liftPower){
+        towerMotor.setTargetPosition(liftHeight);
+        towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        towerMotor.setPower(liftPower);
+    }
+
+
+    //arm function
+    public void arm(int armPosition, double armPower){
+        armMotor.setTargetPosition(armPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(armPower);
+
     }
 }
