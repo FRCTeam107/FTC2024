@@ -49,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //
 // The line below is what our auton in named.
 
-@Autonomous(name="autonDrivingFunctions", group="Robot")
+@Autonomous(name="BlueFar", group="Robot")
 //@Disabled
-public class AutonDrivingFunctions extends LinearOpMode {
+public class blueFarAuton extends LinearOpMode {
 
     IMU imu;
 
@@ -92,9 +92,9 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        armMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
-
-
+        armMotor = hardwareMap.get(DcMotor.class, "arm" +
+                "" +
+                "_motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -166,13 +166,28 @@ public class AutonDrivingFunctions extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
 //        turnLeft(0.5, 90);
-        lift(1800,1);
-        driveForward(.5,7,10);
-        turnLeft(.5,90);
-        driveForward(.5,12,10);
-        turnLeft(.5,45);
-        driveForward(.5,4,10);
+       // lift(2000,1);
+        driveForward(.5,1,10);
+        turnLeft(.5,93);
+        driveForward(.5,70,10);
+//        turnLeft(.5,45);
+        lift(4250,.5);
+        sleep(5000);
+        driveForward(.5,2,10);
+//        arm(-300,1);
         intake(1);
+        sleep(2000);
+        intake(0);
+//        arm(0,1);
+        lift(200,-1);
+        sleep(3000);
+        driveForward(.5,-86,10);
+        turnLeft(.5,-93);
+        driveForward(.5,35,10);
+        turnLeft(.5,-90);
+//        arm(-50,1);
+        driveForward(.5,-3,10);
+        intake(-1);
         sleep(2000);
         intake(0);
 //        turnLeft(.5,-155);
