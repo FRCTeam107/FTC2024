@@ -49,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //
 // The line below is what our auton in named.
 
-@Autonomous(name="autonDrivingFunctions", group="Robot")
+@Autonomous(name="BlueNear", group="Robot")
 //@Disabled
-public class AutonDrivingFunctions extends LinearOpMode {
+public class blueCloseAuton extends LinearOpMode {
 
     IMU imu;
 
