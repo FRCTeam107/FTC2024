@@ -95,7 +95,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
-        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+        flipperMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);

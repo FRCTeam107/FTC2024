@@ -92,7 +92,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        armMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
 
 
@@ -170,16 +170,20 @@ public class AutonDrivingFunctions extends LinearOpMode {
         driveForward(.5,7,10);
         turnLeft(.5,90);
         driveForward(.5,12,10);
+        sleep(1000);
         turnLeft(.5,45);
         driveForward(.5,4,10);
         intake(1);
         sleep(2000);
+        driveForward(.5,-6,10);
+        lift(50,.25);
         intake(0);
-//        turnLeft(.5,-155);
-//        driveForward(.5,13,10);
-//        turnLeft(.5,20);
+        turnLeft(.5,-145);
+        driveForward(.5,13,10);
+        arm(50,1);
+        sleep(20000);
 //        turnLeft(.5,-20);
-//        driveForward(.5,-13,10);
+//        driveForward(.5,-13,1//        turnLeft(.5,20);0);
 //        turnLeft(.5,155);
 //        intake(-1);
 //        sleep(2500);
