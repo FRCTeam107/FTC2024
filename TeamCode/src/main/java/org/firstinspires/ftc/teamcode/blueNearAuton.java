@@ -202,13 +202,13 @@ public class blueNearAuton extends LinearOpMode {
 
         //        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
 //        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-        while (opModeIsActive()){
-            driveForward(0.5,20.0,30.0);
-            turnLeft(0.5, -90.0);
-            getYaw();
-            telemetry.addData("Path", "Complete");
-            telemetry.update();
-        }
+//        while (opModeIsActive()){
+//            driveForward(0.5,20.0,30.0);
+//            turnLeft(0.5, -90.0);
+//            getYaw();
+//            telemetry.addData("Path", "Complete");
+//            telemetry.update();
+//        }
         sleep(100000);  // pause to display final telemetry message.
     }
 
