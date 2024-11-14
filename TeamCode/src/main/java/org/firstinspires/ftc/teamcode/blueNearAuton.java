@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 // Above this line in importing packages. Do not change anything above this line
@@ -50,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //
 // The line below is what our auton in named.
 
-@Autonomous(name="autonDrivingFunctions", group="Robot")
+@Autonomous(name="BlueNear", group="Robot")
 //@Disabled
-public class AutonDrivingFunctions extends LinearOpMode {
+public class blueNearAuton extends LinearOpMode {
 
     IMU imu;
 
@@ -65,7 +64,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
     private CRServo samplePickup = null;
     private DcMotor towerMotor = null;
-    private DcMotor flipperMotor = null;
+    private DcMotor armMotor = null;
     //
     //
     //
@@ -93,7 +92,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
 
 
@@ -125,7 +124,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Reset the encoders
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -146,10 +145,10 @@ public class AutonDrivingFunctions extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d : %7d : %7d : %7d" ,
-                          leftFrontDrive.getCurrentPosition(),
-                          leftBackDrive.getCurrentPosition(),
-                          rightFrontDrive.getCurrentPosition(),
-                          rightBackDrive.getCurrentPosition());
+                leftFrontDrive.getCurrentPosition(),
+                leftBackDrive.getCurrentPosition(),
+                rightFrontDrive.getCurrentPosition(),
+                rightBackDrive.getCurrentPosition());
         telemetry.update();
 
         //
@@ -167,8 +166,38 @@ public class AutonDrivingFunctions extends LinearOpMode {
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
 //        turnLeft(0.5, 90);
+        lift(1800,1);
+        driveForward(.5,7,10);
+        turnLeft(.5,90);
+        driveForward(.5,12,10);
+        sleep(1000);
+        turnLeft(.5,45);
+        driveForward(.5,4,10);
         intake(1);
-        lift(200,.5);
+        sleep(2000);
+        driveForward(.5,-6,10);
+        lift(50,.25);
+        intake(0);
+        turnLeft(.5,-145);
+        driveForward(.5,13,10);
+        arm(50,1);
+        sleep(20000);
+//        turnLeft(.5,-20);
+//        driveForward(.5,-13,1//        turnLeft(.5,20);0);
+//        turnLeft(.5,155);
+//        intake(-1);
+//        sleep(2500);
+//        intake(0);
+//        lift(200,.5);
+//        arm(-500,0.5);
+
+
+//
+//        samplePickup.setPower(1);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds()< 0.5){}
+//        samplePickup.setPower(0);
+
 
 
         //        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
@@ -288,7 +317,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
     // Below is the TurnLeft Function
 
     public void turnLeft(double turnSpeed,
-                        double leftAngle){
+                         double leftAngle){
         if(robotDesiredDirection + leftAngle > 180){
             robotDesiredDirection = robotDesiredDirection + leftAngle - 360;
         }
@@ -299,7 +328,7 @@ public class AutonDrivingFunctions extends LinearOpMode {
             robotDesiredDirection = robotDesiredDirection + leftAngle;
         }
 
-        double              turnTargetPosition      = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
+        double turnTargetPosition = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
 
 
         if (leftAngle > 0.0) {
@@ -312,12 +341,12 @@ public class AutonDrivingFunctions extends LinearOpMode {
 
         }
         else {
-                leftFrontDrive.setPower(turnSpeed);
-                leftBackDrive.setPower(turnSpeed);
-                rightFrontDrive.setPower(-turnSpeed);
-                rightBackDrive.setPower(-turnSpeed);
-                while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
-                };
+            leftFrontDrive.setPower(turnSpeed);
+            leftBackDrive.setPower(turnSpeed);
+            rightFrontDrive.setPower(-turnSpeed);
+            rightBackDrive.setPower(-turnSpeed);
+            while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
+            };
         }
         sleep(250);
 
@@ -394,9 +423,9 @@ public class AutonDrivingFunctions extends LinearOpMode {
 
     //arm function
     public void arm(int armPosition, double armPower){
-        flipperMotor.setTargetPosition(armPosition);
-        flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        flipperMotor.setPower(armPower);
+        armMotor.setTargetPosition(armPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(armPower);
 
     }
 }
