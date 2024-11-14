@@ -29,12 +29,12 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /*
@@ -77,8 +77,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
     private DcMotor rightBackDrive = null;
     private DcMotor towerMotor = null;
     private CRServo samplePickup = null;
-    private DcMotor flipperMotor = null;
-
+    private DcMotor armMotor = null;
+    private DcMotor climberMotor = null;
+    private Servo hookServo = null;
 
 
 //sample operation
@@ -95,7 +96,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
-        flipperMotor = hardwareMap.get(DcMotor.class, "arm_motor");
+        hookServo = hardwareMap.get(Servo.class, "hook_servo");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
+        climberMotor = hardwareMap.get(DcMotor.class, "climber_motor");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -108,10 +111,10 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         boolean liftToggleDown = false;
 
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setTargetPosition(0);
 
-        flipperMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         // Wait for the game to start (driver presses START)
@@ -138,6 +141,8 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             boolean tower_low_basket = gamepad2.dpad_down;
             boolean tower_bottom = gamepad2.b;
             boolean tower_ground = gamepad2.a;
+            boolean climber_up = gamepad2.right_stick_button;
+            boolean climber_down = gamepad2.left_stick_button;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -166,9 +171,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             if (sample_in) {
                 samplePickup.setPower(-1);
-                flipperMotor.setTargetPosition(1450);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+                armMotor.setTargetPosition(1450);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(1);
                 towerMotor.setTargetPosition(400);
                 towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 towerMotor.setPower(1);
@@ -182,9 +187,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
 
             if(activelyIntaking && !sample_in){
                 samplePickup.setPower(0);
-                flipperMotor.setTargetPosition(900);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+                armMotor.setTargetPosition(900);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(1);
                 towerMotor.setTargetPosition(400);
                 towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 towerMotor.setPower(1);
@@ -196,17 +201,17 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
                 towerMotor.setTargetPosition(3750);
                 towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 towerMotor.setPower(1);
-                flipperMotor.setTargetPosition(200);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+                armMotor.setTargetPosition(200);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(1);
 
             } else if (tower_low_basket) {
                 towerMotor.setTargetPosition(2000);
                 towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 towerMotor.setPower(1);
-                flipperMotor.setTargetPosition(500);
-                flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                flipperMotor.setPower(1);
+                armMotor.setTargetPosition(500);
+                armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armMotor.setPower(1);
 
             } else if (tower_ground) {
                 towerMotor.setTargetPosition(0);

@@ -49,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //
 // The line below is what our auton in named.
 
-@Autonomous(name="left close auton", group="Robot")
+@Autonomous(name="BlueFar", group="Robot")
 //@Disabled
-public class LeftCloseAuton extends LinearOpMode {
+public class blueFarAuton extends LinearOpMode {
 
     IMU imu;
 
@@ -64,7 +64,7 @@ public class LeftCloseAuton extends LinearOpMode {
     private ElapsedTime     runtime = new ElapsedTime();
     private CRServo samplePickup = null;
     private DcMotor towerMotor = null;
-    private DcMotor flipperMotor = null;
+    private DcMotor armMotor = null;
     //
     //
     //
@@ -92,9 +92,9 @@ public class LeftCloseAuton extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        flipperMotor = hardwareMap.get(DcMotor.class, "flipper_motor");
-
-
+        armMotor = hardwareMap.get(DcMotor.class, "arm" +
+                "" +
+                "_motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -124,7 +124,7 @@ public class LeftCloseAuton extends LinearOpMode {
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         towerMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        flipperMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //Reset the encoders
         leftFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -145,10 +145,10 @@ public class LeftCloseAuton extends LinearOpMode {
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Starting at",  "%7d : %7d : %7d : %7d" ,
-                          leftFrontDrive.getCurrentPosition(),
-                          leftBackDrive.getCurrentPosition(),
-                          rightFrontDrive.getCurrentPosition(),
-                          rightBackDrive.getCurrentPosition());
+                leftFrontDrive.getCurrentPosition(),
+                leftBackDrive.getCurrentPosition(),
+                rightFrontDrive.getCurrentPosition(),
+                rightBackDrive.getCurrentPosition());
         telemetry.update();
 
         //
@@ -165,9 +165,49 @@ public class LeftCloseAuton extends LinearOpMode {
         // Step through each leg of the path, this is what our robot is actually doing
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-        //lift(4250,1);
-        driveForward(.5,14.0,10.0);
-        intake(1.0);
+//        turnLeft(0.5, 90);
+       // lift(2000,1);
+        driveForward(.5,1,10);
+        turnLeft(.5,93);
+        driveForward(.5,70,10);
+//        turnLeft(.5,45);
+        lift(4250,.5);
+        sleep(5000);
+        driveForward(.5,2,10);
+//        arm(-300,1);
+        intake(1);
+        sleep(2000);
+        intake(0);
+//        arm(0,1);
+        lift(200,-1);
+        sleep(3000);
+        driveForward(.5,-86,10);
+        turnLeft(.5,-93);
+        driveForward(.5,35,10);
+        turnLeft(.5,-90);
+//        arm(-50,1);
+        driveForward(.5,-3,10);
+        intake(-1);
+        sleep(2000);
+        intake(0);
+//        turnLeft(.5,-155);
+//        driveForward(.5,13,10);
+//        turnLeft(.5,20);
+//        turnLeft(.5,-20);
+//        driveForward(.5,-13,10);
+//        turnLeft(.5,155);
+//        intake(-1);
+//        sleep(2500);
+//        intake(0);
+//        lift(200,.5);
+//        arm(-500,0.5);
+
+
+//
+//        samplePickup.setPower(1);
+//        runtime.reset();
+//        while (opModeIsActive() && runtime.seconds()< 0.5){}
+//        samplePickup.setPower(0);
 
 
 
@@ -209,10 +249,10 @@ public class LeftCloseAuton extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-//            leftFrontDrive.setPower(Math.abs(speed));
-//            leftBackDrive.setPower(Math.abs(speed));
-//            rightFrontDrive.setPower(Math.abs(speed));
-//            rightBackDrive.setPower(Math.abs(speed));
+            leftFrontDrive.setPower(Math.abs(speed));
+            leftBackDrive.setPower(Math.abs(speed));
+            rightFrontDrive.setPower(Math.abs(speed));
+            rightBackDrive.setPower(Math.abs(speed));
 
             //If we are running forward
             if(forwardInches>0.0) {
@@ -222,9 +262,9 @@ public class LeftCloseAuton extends LinearOpMode {
                     getYaw();
                     // Below: Ensuring that that the robot corrects itself correctly if the
                     // target angle is close to 180 or -180, and the robot crosses that threshold
-                    if (robotDesiredDirection > 130.0){
-                        if (CURRENT_YAW < 0.0) {
-                            directionError = CURRENT_YAW + 360.0 - robotDesiredDirection;
+                    if (robotDesiredDirection > 130){
+                        if (CURRENT_YAW < 0) {
+                            directionError = CURRENT_YAW +360 - robotDesiredDirection;
                         }
                         else {
                             directionError = CURRENT_YAW - robotDesiredDirection;
@@ -244,7 +284,6 @@ public class LeftCloseAuton extends LinearOpMode {
 
                     directionCorrectionModifier = directionError * 0.01;
                     telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
-                    telemetry.addData("encoder position", "%d Deg. (Heading)", rightFrontDrive.getCurrentPosition());
                     telemetry.update();
                     leftFrontDrive.setPower(speed + directionCorrectionModifier);
                     leftBackDrive.setPower(speed + directionCorrectionModifier);
@@ -289,7 +328,7 @@ public class LeftCloseAuton extends LinearOpMode {
     // Below is the TurnLeft Function
 
     public void turnLeft(double turnSpeed,
-                        double leftAngle){
+                         double leftAngle){
         if(robotDesiredDirection + leftAngle > 180){
             robotDesiredDirection = robotDesiredDirection + leftAngle - 360;
         }
@@ -300,7 +339,7 @@ public class LeftCloseAuton extends LinearOpMode {
             robotDesiredDirection = robotDesiredDirection + leftAngle;
         }
 
-        double              turnTargetPosition      = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
+        double turnTargetPosition = leftFrontDrive.getCurrentPosition() - (int)leftAngle * countsPerDegree;
 
 
         if (leftAngle > 0.0) {
@@ -313,12 +352,12 @@ public class LeftCloseAuton extends LinearOpMode {
 
         }
         else {
-                leftFrontDrive.setPower(turnSpeed);
-                leftBackDrive.setPower(turnSpeed);
-                rightFrontDrive.setPower(-turnSpeed);
-                rightBackDrive.setPower(-turnSpeed);
-                while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
-                };
+            leftFrontDrive.setPower(turnSpeed);
+            leftBackDrive.setPower(turnSpeed);
+            rightFrontDrive.setPower(-turnSpeed);
+            rightBackDrive.setPower(-turnSpeed);
+            while (opModeIsActive() && turnTargetPosition > (leftFrontDrive.getCurrentPosition()+5)){
+            };
         }
         sleep(250);
 
@@ -379,8 +418,8 @@ public class LeftCloseAuton extends LinearOpMode {
 
 
     //intake mechanism function
-    public void intake(double intakePower){
-        samplePickup.setPower(-intakePower);
+    public void intake(int intakePower){
+        samplePickup.setPower(intakePower);
     }
 
 
@@ -395,9 +434,9 @@ public class LeftCloseAuton extends LinearOpMode {
 
     //arm function
     public void arm(int armPosition, double armPower){
-        flipperMotor.setTargetPosition(armPosition);
-        flipperMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        flipperMotor.setPower(armPower);
+        armMotor.setTargetPosition(armPosition);
+        armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        armMotor.setPower(armPower);
 
     }
 }
