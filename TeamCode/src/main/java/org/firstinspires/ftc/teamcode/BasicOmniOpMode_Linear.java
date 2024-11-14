@@ -285,7 +285,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("Lift Position", "%7d", towerMotor.getCurrentPosition());
-            telemetry.addData("Arm Position", "%7d", flipperMotor.getCurrentPosition());
+            telemetry.addData("Arm Position", "%7d", armMotor.getCurrentPosition());
             telemetry.update();
         }
     }}
