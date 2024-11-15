@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -117,6 +118,7 @@ public class blueNearAuton extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         towerMotor.setDirection(DcMotor.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         //Set the motors to brake when there is no power
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -132,6 +134,7 @@ public class blueNearAuton extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         //Set the motors to run using encoder mode
@@ -165,38 +168,43 @@ public class blueNearAuton extends LinearOpMode {
         // Step through each leg of the path, this is what our robot is actually doing
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-//        turnLeft(0.5, 90);
-        lift(1800,1);
-        driveForward(.5,7,10);
-        turnLeft(.5,90);
-        driveForward(.5,10,10);
- //       sleep(1000);
-        turnLeft(.5,45);
-//        driveForward(.5,4,10);
-        intake(-1);
+
+        driveForward(.5,4,10);
+
+        lift(4250,1);
         sleep(2000);
-        driveForward(.5,-6,10);
-        lift(4250,.25);
-        intake(0);
-        driveForward(.5,-13,10);
-        turnLeft(.5,-145);
-        arm(800,.5);
-        intake(-1);
-        driveForward(.5,3,10);
-        intake(0);
-        turnLeft(.5,145);
-        sleep(2000);
-        driveForward(.5,20,10);
-        turnLeft(.5,-145);
-        lift(4250, .5);
-        arm(400, .5);
+        arm(400,1);
+        sleep(1000);
         intake(1);
-        driveForward(.5,-3,10);
-        lift(200, .5);
-        arm(800,.5);
-        turnLeft(.5, 105);
-        driveForward(.5,90, 10);
         sleep(2000);
+        arm(0,1);
+        sleep(2000);
+        lift(0,.5);
+        intake(0);
+        turnLeft(.5,-90);
+        driveForward(1,24,10);
+        sleep(200000000);
+        driveForward(.5,-6,10);
+        intake(0);
+//        driveForward(.5,-13,10);
+        turnLeft(.5,-89);
+//        arm(800,.5);
+//        intake(-1);
+        driveForward(.5,23,10);
+//        intake(0);
+//        turnLeft(.5,145);
+//        sleep(2000);
+//        driveForward(.5,20,10);
+//        turnLeft(.5,-145);
+//        lift(4250, .5);
+//        arm(400, .5);
+//        intake(1);
+//        driveForward(.5,-3,10);
+//        lift(200, .5);
+//        arm(800,.5);
+//        turnLeft(.5, 105);
+//        driveForward(.5,90, 10);
+//        sleep(2000);
 //        turnLeft(.5,-20);
 //        driveForward(.5,-13,1//        turnLeft(.5,20);0);
 //        turnLeft(.5,155);
@@ -389,6 +397,8 @@ public class blueNearAuton extends LinearOpMode {
             }
             // directionError = CURRENT_YAW - robotDesiredDirection;
             directionCorrectionModifier = directionError * 0.02;
+            telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
+            telemetry.addData("error", "%.2f Deg. (Heading)", directionError);
             telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
             telemetry.update();
             leftFrontDrive.setPower(directionCorrectionModifier);
