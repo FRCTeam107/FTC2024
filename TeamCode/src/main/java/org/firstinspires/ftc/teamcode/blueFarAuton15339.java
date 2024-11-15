@@ -92,9 +92,7 @@ public class blueFarAuton15339 extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        armMotor = hardwareMap.get(DcMotor.class, "arm" +
-                "" +
-                "_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -173,7 +171,7 @@ public class blueFarAuton15339 extends LinearOpMode {
         driveForward(.7,76,10);
 //        turnLeft(.5,45);
         lift(4250,1);
-        sleep(2000);
+        sleep(2200);
         arm(450,0.7);
         sleep(1000);
 //        driveForward(.5,2,10);
@@ -181,25 +179,26 @@ public class blueFarAuton15339 extends LinearOpMode {
         intake(1);
         sleep(2000);
         intake(0);
-        sleep(1000);
+        arm(0,1);
         driveForward(.7, -3,10);
-        lift(200,-1);
+        lift(0,-1);
         sleep(3000);
-        driveForward(.7,-86,10);
-        turnLeft(.7,-91);
-        driveForward(.7,25,10);
-        turnLeft(.7,-90);
-        arm(1200,1);
-        driveForward(.7,-3,10);
-        intake(1);
-        sleep(2000);
-        arm(0, .7);
-        driveForward(.7,3, 10);
-        sleep(2000);
-        intake(0);
-        turnLeft(.7,-80);
-        driveForward(1,24,10);
-        sleep(20000);
+        driveForward(.7,-100,10);
+        sleep(300000);
+//        turnLeft(.7,-91);
+//        driveForward(.7,25,10);
+//        turnLeft(.7,-90);
+//        arm(1200,1);
+//        driveForward(.7,-3,10);
+//        intake(1);
+//        sleep(2000);
+//        arm(0, .7);
+//        driveForward(.7,3, 10);
+//        sleep(2000);
+//        intake(0);
+//        turnLeft(.7,-80);
+//        driveForward(1,24,10);
+//        sleep(20000);
 //        turnLeft(.7, -90);
 //        driveForward(1,86,10);
 //        lift(4250,.7 );
