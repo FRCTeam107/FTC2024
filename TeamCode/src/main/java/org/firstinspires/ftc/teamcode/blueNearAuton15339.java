@@ -49,9 +49,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 //
 // The line below is what our auton in named.
 
-@Autonomous(name="BlueFar", group="Robot")
+@Autonomous(name="BlueNear15339", group="Robot")
 //@Disabled
-public class blueFarAuton extends LinearOpMode {
+public class blueNearAuton15339 extends LinearOpMode {
 
     IMU imu;
 
@@ -92,9 +92,9 @@ public class blueFarAuton extends LinearOpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
         samplePickup = hardwareMap.get(CRServo.class, "sample_pickup");
         towerMotor = hardwareMap.get(DcMotor.class, "tower_motor");
-        armMotor = hardwareMap.get(DcMotor.class, "arm" +
-                "" +
-                "_motor");
+        armMotor = hardwareMap.get(DcMotor.class, "arm_motor");
+
+
 
         imu = hardwareMap.get(IMU.class, "imu");
 
@@ -117,6 +117,7 @@ public class blueFarAuton extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         towerMotor.setDirection(DcMotor.Direction.REVERSE);
+//        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         //Set the motors to brake when there is no power
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -132,6 +133,7 @@ public class blueFarAuton extends LinearOpMode {
         rightFrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         //Set the motors to run using encoder mode
@@ -165,52 +167,45 @@ public class blueFarAuton extends LinearOpMode {
         // Step through each leg of the path, this is what our robot is actually doing
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
 
-//        turnLeft(0.5, 90);
-       // lift(2000,1);
-        driveForward(.5,2,10);
-        turnLeft(.5,93);
-        driveForward(.5,75,10);
-//        turnLeft(.5,45);
-        lift(4250,.5);
-        sleep(5000);
-        driveForward(.5,2,10);
-//        arm(-300,1);
-        intake(1);
-        sleep(2000);
-        intake(0);
-        driveForward(.5, -3,10);
-        lift(200,-1);
-        sleep(3000);
-        driveForward(.5,-86,10);
-        turnLeft(.5,-91);
-        driveForward(.5,35,10);
-        turnLeft(.5,-90);
-//        arm(-50,1);
-        driveForward(.5,-3,10);
-        arm(0, .5);
-        intake(-1);
-        driveForward(.5,3, 10);
-        sleep(2000);
-        intake(0);
-        turnLeft(.5,-91);
-        driveForward(1,28,10);
-        turnLeft(.5, -90);
-        driveForward(1,86,10);
-        lift(4250,.5 );
-        sleep(5000);
-        driveForward(.5,2,10);
-        intake(1);
-        sleep(2000);
-        intake(0);
-        driveForward(.5, -3,10);
-        lift(200,-1);
-        sleep(3000);
 
-//        turnLeft(.5,-155);
-//        driveForward(.5,13,10);
-//        turnLeft(.5,20);
-//        turnLeft(.5,-20);
+        driveForward(.5,7,10);
+
+        lift(4100,1);
+        sleep(2000);
+        arm(400,1);
+        sleep(1000);
+        intake(1);
+        sleep(2000);
+        arm(0,1);
+        sleep(2000);
+        lift(0,.5);
+        intake(0);
+        turnLeft(.5,-90);
+        driveForward(1,24,10);
+        sleep(200000000);
+        driveForward(.5,-6,10);
+        intake(0);
 //        driveForward(.5,-13,10);
+        turnLeft(.5,-89);
+//        arm(800,.5);
+//        intake(-1);
+        driveForward(.5,23,10);
+//        intake(0);
+//        turnLeft(.5,145);
+//        sleep(2000);
+//        driveForward(.5,20,10);
+//        turnLeft(.5,-145);
+//        lift(4250, .5);
+//        arm(400, .5);
+//        intake(1);
+//        driveForward(.5,-3,10);
+//        lift(200, .5);
+//        arm(800,.5);
+//        turnLeft(.5, 105);
+//        driveForward(.5,90, 10);
+//        sleep(2000);
+//        turnLeft(.5,-20);
+//        driveForward(.5,-13,1//        turnLeft(.5,20);0);
 //        turnLeft(.5,155);
 //        intake(-1);
 //        sleep(2500);
@@ -401,6 +396,8 @@ public class blueFarAuton extends LinearOpMode {
             }
             // directionError = CURRENT_YAW - robotDesiredDirection;
             directionCorrectionModifier = directionError * 0.02;
+            telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
+            telemetry.addData("error", "%.2f Deg. (Heading)", directionError);
             telemetry.addData("modifier", "%.2f Deg. (Heading)", directionCorrectionModifier);
             telemetry.update();
             leftFrontDrive.setPower(directionCorrectionModifier);
