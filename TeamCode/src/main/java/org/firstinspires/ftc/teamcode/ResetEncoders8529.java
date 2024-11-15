@@ -64,9 +64,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Reset Encoders", group="Linear OpMode")
+@TeleOp(name="Reset Encoders 8529", group="Linear OpMode")
 //@Disabled
-public class ResetEncoders extends LinearOpMode {
+public class ResetEncoders8529 extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -104,6 +104,7 @@ public class ResetEncoders extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         towerMotor.setDirection(DcMotor.Direction.REVERSE);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         boolean activelyIntaking = false;
         boolean liftToggleUp = false;
@@ -129,13 +130,21 @@ public class ResetEncoders extends LinearOpMode {
             armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             armMotor.setPower(-.5);
 
-            sleep(3000);
+            sleep(2000);
 
             towerMotor.setPower(0);
             armMotor.setPower(0);
 
+            sleep(1000);
+
             towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            towerMotor.setTargetPosition(0);
+            towerMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            towerMotor.setPower(.5);
+
+            sleep(300000);
 
 //            while(opModeIsActive()){
 //                telemetry.addData("Reset Encoders", "%t", " done");
