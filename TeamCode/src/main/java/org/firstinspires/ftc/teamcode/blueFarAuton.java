@@ -167,9 +167,9 @@ public class blueFarAuton extends LinearOpMode {
 
 //        turnLeft(0.5, 90);
        // lift(2000,1);
-        driveForward(.5,1,10);
+        driveForward(.5,2,10);
         turnLeft(.5,93);
-        driveForward(.5,70,10);
+        driveForward(.5,75,10);
 //        turnLeft(.5,45);
         lift(4250,.5);
         sleep(5000);
@@ -178,18 +178,34 @@ public class blueFarAuton extends LinearOpMode {
         intake(1);
         sleep(2000);
         intake(0);
-//        arm(0,1);
+        driveForward(.5, -3,10);
         lift(200,-1);
         sleep(3000);
         driveForward(.5,-86,10);
-        turnLeft(.5,-93);
+        turnLeft(.5,-91);
         driveForward(.5,35,10);
         turnLeft(.5,-90);
 //        arm(-50,1);
         driveForward(.5,-3,10);
+        arm(0, .5);
         intake(-1);
+        driveForward(.5,3, 10);
         sleep(2000);
         intake(0);
+        turnLeft(.5,-91);
+        driveForward(1,28,10);
+        turnLeft(.5, -90);
+        driveForward(1,86,10);
+        lift(4250,.5 );
+        sleep(5000);
+        driveForward(.5,2,10);
+        intake(1);
+        sleep(2000);
+        intake(0);
+        driveForward(.5, -3,10);
+        lift(200,-1);
+        sleep(3000);
+
 //        turnLeft(.5,-155);
 //        driveForward(.5,13,10);
 //        turnLeft(.5,20);
