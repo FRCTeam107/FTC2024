@@ -169,7 +169,7 @@ public class BasicOmniOpMode_Linear8529 extends LinearOpMode {
 
 
 
-            if (sample_in) {
+            if (sample_in && towerMotor.getTargetPosition()<1000) {
                 samplePickup.setPower(-1);
                 armMotor.setTargetPosition(1400);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

@@ -80,6 +80,8 @@ public class BasicOmniOpMode_Linear15339 extends LinearOpMode {
         rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         towerMotor.setDirection(DcMotor.Direction.REVERSE);
 
+        towerMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         boolean activelyIntaking = false;
         boolean liftToggleUp = false;
         boolean liftToggleDown = false;
@@ -143,7 +145,7 @@ public class BasicOmniOpMode_Linear15339 extends LinearOpMode {
 
 
 
-            if (sample_in) {
+            if (sample_in && towerMotor.getTargetPosition()<1000) {
                 samplePickup.setPower(-1);
                 armMotor.setTargetPosition(1450);
                 armMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

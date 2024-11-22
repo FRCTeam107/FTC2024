@@ -173,65 +173,43 @@ public class blueNearAuton15339 extends LinearOpMode {
         lift(4100,1);
         sleep(2000);
         arm(400,1);
+        sleep(300);
+        intake(1);
+        sleep(2000);
+        arm(0,1);
+        sleep(500);
+        lift(0,.5);
+        intake(0);
+        sleep(2000);
+        driveForward(.5,-18,5);
+        sleep(200);
+        turnLeft(0.5,-90);
+        sleep(200);
+        driveForward(.7,27,10);
+        sleep(200);
+        turnLeft(.5,70);
+        arm(1250,0.5);
+        sleep(1000);
+        intake(-1);
+        driveForward(0.15,7,10);
+        intake(0);
+
+        arm(0,1);
+        sleep(200);
+        turnLeft(0.5,75);
+        lift(4100,1);
+        driveForward(.5,28,10);
+
+
+        sleep(1000);
+        arm(400,1);
         sleep(1000);
         intake(1);
         sleep(2000);
         arm(0,1);
-        sleep(2000);
-        lift(0,.5);
-        intake(0);
-        turnLeft(.5,-90);
-        driveForward(1,24,10);
-        sleep(200000000);
-        driveForward(.5,-6,10);
-        intake(0);
-//        driveForward(.5,-13,10);
-        turnLeft(.5,-89);
-//        arm(800,.5);
-//        intake(-1);
-        driveForward(.5,23,10);
-//        intake(0);
-//        turnLeft(.5,145);
-//        sleep(2000);
-//        driveForward(.5,20,10);
-//        turnLeft(.5,-145);
-//        lift(4250, .5);
-//        arm(400, .5);
-//        intake(1);
-//        driveForward(.5,-3,10);
-//        lift(200, .5);
-//        arm(800,.5);
-//        turnLeft(.5, 105);
-//        driveForward(.5,90, 10);
-//        sleep(2000);
-//        turnLeft(.5,-20);
-//        driveForward(.5,-13,1//        turnLeft(.5,20);0);
-//        turnLeft(.5,155);
-//        intake(-1);
-//        sleep(2500);
-//        intake(0);
-//        lift(200,.5);
-//        arm(-500,0.5);
-
-
-//
-//        samplePickup.setPower(1);
-//        runtime.reset();
-//        while (opModeIsActive() && runtime.seconds()< 0.5){}
-//        samplePickup.setPower(0);
-
-
-
-        //        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
-//        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
-//        while (opModeIsActive()){
-//            driveForward(0.5,20.0,30.0);
-//            turnLeft(0.5, -90.0);
-//            getYaw();
-//            telemetry.addData("Path", "Complete");
-//            telemetry.update();
-//        }
-        sleep(100000);  // pause to display final telemetry message.
+        sleep(1000);
+        lift(0,1);
+        sleep(1000000);  // pause to display final telemetry message.
     }
 
     //
@@ -452,4 +430,18 @@ public class blueNearAuton15339 extends LinearOpMode {
         armMotor.setPower(armPower);
 
     }
+
+//    //Strafing Function
+//    public void strafeRight (float strafeDistance, float strafeSpeed){
+//        leftFrontDrive.setTargetPosition((int)(strafeDistance*COUNTS_PER_INCH));
+//        leftBackDrive.setTargetPosition(-(int)(strafeDistance*COUNTS_PER_INCH));
+//        rightFrontDrive.setTargetPosition(-(int)(strafeDistance*COUNTS_PER_INCH));
+//        rightBackDrive.setTargetPosition((int)(strafeDistance*COUNTS_PER_INCH));
+//        leftFrontDrive.
+//        leftFrontDrive.setPower(strafeSpeed);
+//        leftBackDrive.setPower(-strafeSpeed);
+//        rightFrontDrive.setPower(strafeSpeed);
+//        rightBackDrive.setPower(strafeSpeed);
+//
+//    }
 }
